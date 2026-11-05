@@ -369,51 +369,39 @@ If V4.1 is the full-Expert MoE class, most people can't run it locally. Only qua
 
 ---
 
-## 7. Where to use them — recap & full uncensored provider directory
+## 7. Where to use uncensored models — provider directory
 
-### 7.1 The recap (from the original list)
+Run them **locally** for full privacy, or use a hosted provider. Both paths are below.
 
-- **[Venice AI](https://venice.ai/) / "experiential"** — browser-friendly, anonymous-ish, free tier, some models image+text
-- **OpenRouter** — dozens of these variants, `:free` routes for the small/average ones; standard OpenAI API contract (drop-in to OpenCode, Cline, Zed, Cursor, Hermes via `base_url=https://openrouter.ai/api/v1`)
-- **OpenCode / Cline / Zed / Cursor / Hermes via API** — the coding-agent crowd; combined with a local `llama-server` you get agents with **zero** logging
-- **Local via Hugging Face GGUF / FP8** — the privacy end-game: GGUF for llama.cpp (all GPUs, even CPU); FP8 for vLLM/ExLlama on modern datacenter/Ada GPUs
+### Local (the privacy end-game)
 
-### 7.2 Uncensored model providers (hosted)
+Download GGUF from Hugging Face (§2.1) and run in llama.cpp — see [§3](#3-the-llamacpp-tutorial-estimate-free-copy-paste-friendly) and [§8](#8-quick-start-for-the-impatient): all GPUs, even CPU. FP8 weights are the alternative for vLLM/ExLlama on modern GPUs. Combine a local `llama-server` with coding agents (OpenCode, Cline, Zed, Cursor, Hermes all accept `base_url=http://127.0.0.1:8080/v1`) and nothing is ever logged anywhere.
 
-**Quick links:** [WUS Router](https://wusrouter.com/) · [Venice AI](https://venice.ai/)
+All hosted providers below speak the OpenAI chat-completions dialect — you plug them into the same agents with a `base_url` swap.
 
-**The wider landscape beyond OpenRouter & Venice:**
+### Hosted providers
 
-- **[Parasail](https://parasail.io) & [Infermatic](https://infermatic.ai)** — cloud inference platforms frequently recommended for hosting open-source or fine-tuned uncensored weights via API.
-- **[Featherless](https://featherless.ai)** — a dedicated serverless endpoint provider for running open and unaligned model weights.
-- **[Wiro AI](https://wiro.ai)** — offers an API routing multiple unconstrained/less-refused models (such as Qwen Uncensored and Seed variants).
-- **[Chat Data](https://chatdata.ai)** — provides hosted unaligned access to large-scale models like Uncensored DeepSeek V4 Flash through paid subscription tiers. *(domain unreachable at publish time — verify before use)*
-- **[Shannon AI](https://shannon.ai)** — markets a specialized frontier-level uncensored assistant with web search and memory capabilities. *(domain unreachable at publish time — verify before use)*
-- **[Orca Router](https://orcarouter.com) & [Obliteration.AI](https://obliteration.ai)** — hosted routing and API providers that typically require identity/KYC verification to access heavy or "obliterated" model weights. *(Obliteration.AI's domain currently redirects/parked — verify before use)*
+| Provider | Link | What it offers | Models |
+|---|---|---|---|
+| OpenRouter | [openrouter.ai](https://openrouter.ai) | Largest aggregator; pay-as-you-go; `:free` routes for small models; allows custom system prompts without provider-level censorship | [Dolphin Mistral 24B (Venice Edition)](https://openrouter.ai/cognitivecomputations/dolphin-mistral-24b-venice-edition), unaligned Llama/Qwen fine-tunes |
+| Venice AI | [venice.ai](https://venice.ai/) | Privacy-first consumer chat + API; free tier with daily tokens | Curated unaligned chat & image models |
+| WUS Router | [wusrouter.com](https://wusrouter.com/) | Aggregator-style router, simple API keys | Rotating uncensored fine-tunes — verify current list on-site |
+| Featherless | [featherless.ai](https://featherless.ai) | Flat-rate serverless, 40,000+ open + unaligned models | Huihui-Qwen3.8-27B-abliterated, OBLITERATUS/Qwen3.8-27B-OBLITERATED |
+| Wiro AI | [wiro.ai](https://wiro.ai) | Multi-model routing API (1000+ models) for workflows that hit corporate refusals (security research, clinical text, mature fiction) | Qwen 3.8 27B Uncensored, Seed v2.1 Turbo / V2 Pro Uncensored |
+| Parasail | [parasail.io](https://parasail.io) | Inference cloud, 42+ open models, custom/fine-tuned endpoints | Bring-your-own uncensored weights |
+| Infermatic | [infermatic.ai](https://infermatic.ai) | vLLM-backed cloud inference, no prompt logging, free plan | Qwen/Llama unaligned variants |
+| Mancer | [mancer.tech](https://mancer.tech) | Zero-refusal layers, no filtering, high context | Uncensored DeepSeek V4 Flash (284B, 1M context) |
+| Orca Router | [orcarouter.com](https://orcarouter.com) | Router with KYC for heavy obliterated weights; endpoint `api.orcarouter.ai/v1` | Large abliterated-class models; cyber-tier via business verification |
+| Obliteration.AI ⚠ | [obliteration.ai](https://obliteration.ai) | Deeply abliterated hosted models; typically KYC-gated | Obliterated Large Flash, DeepSeek Flash Uncensored |
+| Chat Data ⚠ | [chatdata.ai](https://chatdata.ai) | Hosted large-scale unaligned models via subscription | Uncensored DeepSeek V4 Flash tiers |
+| Shannon AI ⚠ | [shannon.ai](https://shannon.ai) | Frontier uncensored assistant with web search + memory, aimed at cyber/red-teaming | Shannon proprietary engines |
 
-**Directory — who hosts what:**
+**ⓘ Links status:** ✅-live as of 2026-11-06 for all rows without a ⚠. ⚠ rows could not be verified reachable at publish time (`obliteration.ai` parked/unreachable, `chatdata.ai` 404, `shannon.ai` unreachable) — these provider names circulate in the community; if the link is stale, search the exact name.
 
-| Provider | What it is / best for | Notable uncensored models offered |
-|---|---|---|
-| **[OpenRouter](https://openrouter.ai)** | The largest model aggregator; pay-as-you-go API. Explicitly tags uncensored variants and allows custom system prompts without provider-level censorship | • Dolphin Mistral 24B (Venice Edition)<br>• Various unaligned Llama/Qwen fine-tunes |
-| **[Wiro AI](https://wiro.ai)** | Specially tailored for workflows that keep hitting corporate refusals (e.g., security research, clinical text, mature fiction) | • Qwen 3.8 27B Uncensored<br>• Seed v2.1 Turbo / V2 Pro Uncensored |
-| **[Obliteration.AI](https://obliteration.ai)** ⚠ | Highly specialized hosted provider offering deeply "abliterated" models that completely remove refusal behaviors | • Obliterated Large Flash<br>• DeepSeek Flash Uncensored variants |
-| **[Mancer](https://mancer.tech) / [Chat Data](https://chatdata.ai)** ⚠ | Large context windows and zero-refusal layers without needing local infrastructure | • Uncensored DeepSeek V4 Flash (284B parameters, 1M context) |
-| **[Shannon AI](https://shannon.ai)** ⚠ | Aimed primarily at cybersecurity, red-teaming, and frontier research, bypassing standard constraints completely | • Shannon proprietary uncensored engines |
-| **[Venice AI](https://venice.ai)** | Privacy-first consumer chat + API; free tier with daily tokens | • Curated unaligned chat & image models |
-| **[WUS Router](https://wusrouter.com/)** | Aggregator-style router for unaligned weights via simple API keys | • Rotating catalog of uncensored fine-tunes — verify the current list on-site |
-| **[Parasail](https://parasail.io)** | Dedicated inference API commonly suggested for custom / fine-tuned uncensored checkpoints | • Bring-your-own uncensored weight set |
-| **[Infermatic](https://infermatic.ai)** | Cloud inference for open-source models, uncensored-friendly | • Qwen/Llama unaligned variants |
-| **[Featherless](https://featherless.ai)** | Flat-rate serverless endpoint across 40,000+ open + unaligned models (incl. abliterated catalog) | • Huihui-Qwen3.8-27B-abliterated<br>• OBLITERATUS/Qwen3.8-27B-OBLITERATED<br>• Rotating new uncensored fine-tunes |
-| **[Orca Router](https://orcarouter.com)** | Router requiring KYC to unlock heavy "obliterated" weights; OpenAI-compatible endpoint at `api.orcarouter.ai/v1` | • Large abliterated-class models<br>• Cyber-tier models via business verification |
-
-> ⓘ ⚠ marks links whose domains I could not confirm reachable at publish time (2026-11-06): `obliteration.ai`, `chatdata.ai`, `shannon.ai`. These provider names circulate in the community, but their live domains may have changed — search the exact provider name if the link is stale. All other links were verified live.
-
-> **Practical notes when choosing a provider:**
-> - **Identity vs. privacy:** providers carrying heavy "obliterated" weights (Orca Router, Obliteration.AI) typically need KYC/identity verification; consumer-privacy-first ones (Venice AI) trade model breadth for anonymity.
-> - **Huge-context runs:** for 1M-token-scale entries like Uncensored DeepSeek V4 Flash, confirm the provider's actual per-request context cap before subscribing — marketing context ≠ usable context at each price tier.
-> - **API contracts:** most of these speak the OpenAI chat-completions dialect, so the same `base_url` swap works in OpenCode / Cline / Zed / Cursor / Hermes as shown in [§8](#8-quick-start-for-the-impatient).
-> - **Freshness:** this directory changes constantly (providers fold, rename, or re-gate); treat the table as the 2026-11 snapshot and always confirm current model availability on the provider's own page before subscribing.
+**Choosing notes:**
+- **Identity vs. privacy:** KYC required at Orca Router / Obliteration.AI-class providers; Venice AI-class trades model breadth for anonymity.
+- **1M context claims:** before subscribing to something like Uncensored DeepSeek V4 Flash, confirm the provider's per-request context cap — marketing context ≠ usable context per tier.
+- **Freshness:** providers fold, rename, or re-gate constantly; this is a 2026-11 snapshot — always confirm model availability on the provider's own page.
 
 ---
 
