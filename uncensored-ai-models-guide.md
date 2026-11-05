@@ -377,32 +377,37 @@ Run them **locally** for full privacy, or use a hosted provider. Both paths are 
 
 Download GGUF from Hugging Face (§2.1) and run in llama.cpp — see [§3](#3-the-llamacpp-tutorial-estimate-free-copy-paste-friendly) and [§8](#8-quick-start-for-the-impatient): all GPUs, even CPU. FP8 weights are the alternative for vLLM/ExLlama on modern GPUs. Combine a local `llama-server` with coding agents (OpenCode, Cline, Zed, Cursor, Hermes all accept `base_url=http://127.0.0.1:8080/v1`) and nothing is ever logged anywhere.
 
+Useful companion resources:
+- **[abliteratedmodels.org](https://www.abliteratedmodels.org)** — index of 956 abliterated open-weight models on Hugging Face: what each was built from, size, hardware needs, license
+- **[UGI Leaderboard](https://huggingface.co/spaces/DontPlanToEnd/UGI-Leaderboard)** — community ranking of models on willingness / intelligence / writing
+
 All hosted providers below speak the OpenAI chat-completions dialect — you plug them into the same agents with a `base_url` swap.
 
 ### Hosted providers
 
 | Provider | Link | What it offers | Models |
 |---|---|---|---|
-| OpenRouter | [openrouter.ai](https://openrouter.ai) | Largest aggregator; pay-as-you-go; `:free` routes for small models; allows custom system prompts without provider-level censorship | [Dolphin Mistral 24B (Venice Edition)](https://openrouter.ai/cognitivecomputations/dolphin-mistral-24b-venice-edition), unaligned Llama/Qwen fine-tunes |
-| Venice AI | [venice.ai](https://venice.ai/) | Privacy-first consumer chat + API; free tier with daily tokens | Curated unaligned chat & image models |
+| Venice AI | [venice.ai](https://venice.ai/) | Privacy-first consumer chat + API (OpenAI-compatible, `api.venice.ai/api/v1`); free tier with daily tokens; Private-tier models = contract-enforced zero data retention | Venice Uncensored 1.2, DeepSeek V4.1 Flash Uncensored (Private tier), Gemma 4 Uncensored, GLM 4.7 Flash Heretic ($0.07/$0.40 — cheapest uncensored API listing available), plus resold Abliteration.ai models |
+| OpenRouter | [openrouter.ai](https://openrouter.ai) | Largest aggregator; pay-as-you-go; keeps no prompts unless you opt in (ZDR filter available); one uncensored listing as of Oct 2026 | [Venice: Uncensored (Dolphin Mistral 24B Venice Edition)](https://openrouter.ai/cognitivecomputations/dolphin-mistral-24b-venice-edition) — $0.20/$0.90 per 1M, but output capped at 8,192 tokens |
+| Featherless | [featherless.ai](https://featherless.ai) | Flat-rate / per-token serverless, 53,000+ open models incl. dedicated "Abliterated" + "Uncensored" categories; says prompts never stored | Huihui-Qwen3.8-27B-abliterated ($1.60/$12 per 1M, 32K ctx) and other community abliterations |
+| Abliteration.ai | [abliteration.ai](https://abliteration.ai) | ✅ (verified) — the only provider selling exclusively abliterated models. Zero prompt storage, Policy Gateway (your rules-as-code), SIEM audit streaming (Splunk/Datadog), SSO + region-specific hosting on Enterprise; OpenAI + Anthropic Messages at `api.abliteration.ai/v1` | Abliterated Large v2 (full GLM-5.3) $3/$5 · Abliterated Large Flash (DeepSeek V4.1 Flash base) $1/$2 · Abliterated Model $1/$3 (256K ctx) |
+| Experiential Labs | [experientiallabs.ai](https://www.experientiallabs.ai) | YC-backed; OpenAI-compatible at `api.experientiallabs.ai/v1`, 1M-token contexts, tool calling. ⚠️ caveats: uncensored models keep every prompt/response even with storage off | GLM-5.3 Flash Uncensored (320B MoE abliterated, 1M ctx) $0.15/$0.50 · DeepSeek V4.1 Flash Uncensored $0.30/$1.20 (1.05M ctx, 25% off list) |
 | WUS Router | [wusrouter.com](https://wusrouter.com/) | Aggregator-style router, simple API keys | Rotating uncensored fine-tunes — verify current list on-site |
-| Featherless | [featherless.ai](https://featherless.ai) | Flat-rate serverless, 40,000+ open + unaligned models | Huihui-Qwen3.8-27B-abliterated, OBLITERATUS/Qwen3.8-27B-OBLITERATED |
 | Wiro AI | [wiro.ai](https://wiro.ai) | Multi-model routing API (1000+ models) for workflows that hit corporate refusals (security research, clinical text, mature fiction) | Qwen 3.8 27B Uncensored, Seed v2.1 Turbo / V2 Pro Uncensored |
 | Parasail | [parasail.io](https://parasail.io) | Inference cloud, 42+ open models, custom/fine-tuned endpoints | Bring-your-own uncensored weights |
 | Infermatic | [infermatic.ai](https://infermatic.ai) | vLLM-backed cloud inference, no prompt logging, free plan | Qwen/Llama unaligned variants |
-| Mancer | [mancer.tech](https://mancer.tech) | Zero-refusal layers, no filtering, high context | Uncensored DeepSeek V4 Flash (284B, 1M context) |
-| Orca Router | [orcarouter.com](https://orcarouter.com) | Router with KYC for heavy obliterated weights; endpoint `api.orcarouter.ai/v1` | Large abliterated-class models; cyber-tier via business verification |
-| Chat Data ⚠ | [chatdata.ai](https://chatdata.ai) | Hosted large-scale unaligned models via subscription | Uncensored DeepSeek V4 Flash tiers |
+| Mancer | [mancer.tech](https://mancer.tech) | Zero-refusal layers, no filtering, "Unconstrained Language Processing" | Uncensored DeepSeek V4 Flash (284B, 1M context) |
+| Chat Data | [chat-data.com](https://www.chat-data.com/uncensored-llm) | No-code agent builder: host an uncensored model as *your own bot* (website/Telegram/WhatsApp/Discord), your system prompt, tool calling, per-user memory. Uncensored model requires a paid plan | Uncensored DeepSeek V4 Flash (~1M context, text-only) |
+| Orca Router | [orcarouter.com](https://orcarouter.com) | Router (200+ models, zero markup) with KYC unlocking heavy weights; endpoint `api.orcarouter.ai/v1`. Their HF org publishes uncensored Qwen3.8 weights, but no uncensored models appear in their API catalog | Large abliterated-class models; cyber-tier via business verification |
+| NovelAI | [novelai.net](https://novelai.net/) | Subscription fiction studio; browser-encrypted stories; no content filter since 2022 (18+ terms apply) | GLM-4.6 & own storytelling fine-tune — fiction-focused, not an assistant |
 
-**ⓘ Links status:** ✅-live as of 2026-11-06 for all rows without a ⚠. ⚠ rows could not be verified reachable at publish time (`chatdata.ai` 404) — if a ⚠ link is stale, search the exact provider name. **Removed from this directory as unverifiable/likely fake:**
-- **"Shannon AI"** — removed: does not resolve; no reachable product behind the name. Providers listed only in social-media posts with no working domain should be treated as pending verification at best.
-- **"Obliteration.AI"** — removed: `obliteration.ai` forwards to a *domain-for-sale listing*, i.e. no actual provider exists at that address.
+**ⓘ Link status:** every row above was fetched live on 2026-11-06 — all domains resolve. Note on viral-list names: **"Obliteration.AI"** (no such domain — theirs was for sale) almost certainly referred to the real **Abliteration.ai**, which is listed above; "Shannon AI" remains unverifiable (no reachable domain) and is excluded. For stale links, search the exact provider name.
 
 **Choosing notes:**
-- **Identity vs. privacy:** KYC required at Orca Router-class providers; Venice AI-class trades model breadth for anonymity.
-- **Fake-provider check:** "Obliteration.AI" (domain-for-sale page) and "Shannon AI" (no reachable domain) are real-world examples of names that circulate in social-media provider lists with no live product behind them — before trusting any provider from a viral list, check the domain resolves to the actual product (not a domain marketplace) and has a working API key flow.
-- **1M context claims:** before subscribing to something like Uncensored DeepSeek V4 Flash, confirm the provider's per-request context cap — marketing context ≠ usable context per tier.
-- **Freshness:** providers fold, rename, or re-gate constantly; this is a 2026-11 snapshot — always confirm model availability on the provider's own page.
+- **Retention differs per model, not per provider:** Venice's Private tier is contract-enforced zero retention, but its Anonymized models pass your prompt to an upstream provider; Experiential's uncensored models keep everything. Check the retention tier of the exact model ID you plan to call.
+- **Context/output caps worth checking:** OpenRouter's Venice endpoint caps output at 8,192 tokens and Featherless listings at 32K context — both awkward for long agent runs; Venice, Abliteration.ai and Experiential all do 1M contexts.
+- **Fake-provider check:** the above is a real-world example of how viral lists go wrong (typo'd "Obliteration.AI", invented "Shannon AI") — before trusting a provider from a list, confirm the domain resolves to the actual product and the pricing/docs pages exist.
+- **Freshness:** providers fold, rename, or re-gate constantly; this is a November 2026 snapshot — always confirm model availability on the provider's own page.
 
 ---
 
