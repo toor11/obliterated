@@ -393,13 +393,14 @@ All hosted providers below speak the OpenAI chat-completions dialect — you plu
 | Mancer | [mancer.tech](https://mancer.tech) | Zero-refusal layers, no filtering, high context | Uncensored DeepSeek V4 Flash (284B, 1M context) |
 | Orca Router | [orcarouter.com](https://orcarouter.com) | Router with KYC for heavy obliterated weights; endpoint `api.orcarouter.ai/v1` | Large abliterated-class models; cyber-tier via business verification |
 | Chat Data ⚠ | [chatdata.ai](https://chatdata.ai) | Hosted large-scale unaligned models via subscription | Uncensored DeepSeek V4 Flash tiers |
-| Shannon AI ⚠ | [shannon.ai](https://shannon.ai) | Frontier uncensored assistant with web search + memory, aimed at cyber/red-teaming | Shannon proprietary engines |
 
-**ⓘ Links status:** ✅-live as of 2026-11-06 for all rows without a ⚠. ⚠ rows could not be verified reachable at publish time (`chatdata.ai` 404, `shannon.ai` unreachable) — also, **"Obliteration.AI" was removed from this directory**: its listed domain (`obliteration.ai`) forwards to a *domain-for-sale listing*, i.e. no actual provider exists at that address; treat any future "Obliteration.AI" claims as unverified. If a ⚠ link is stale, search the exact provider name.
+**ⓘ Links status:** ✅-live as of 2026-11-06 for all rows without a ⚠. ⚠ rows could not be verified reachable at publish time (`chatdata.ai` 404) — if a ⚠ link is stale, search the exact provider name. **Removed from this directory as unverifiable/likely fake:**
+- **"Shannon AI"** — removed: does not resolve; no reachable product behind the name. Providers listed only in social-media posts with no working domain should be treated as pending verification at best.
+- **"Obliteration.AI"** — removed: `obliteration.ai` forwards to a *domain-for-sale listing*, i.e. no actual provider exists at that address.
 
 **Choosing notes:**
 - **Identity vs. privacy:** KYC required at Orca Router-class providers; Venice AI-class trades model breadth for anonymity.
-- **Fake-provider check:** "Obliteration.AI" is a real-world example of a name that circulates in social-media provider lists with no live product behind it — before trusting any provider from a viral list, check the domain resolves to the actual product (not a domain marketplace) and has a working API key flow.
+- **Fake-provider check:** "Obliteration.AI" (domain-for-sale page) and "Shannon AI" (no reachable domain) are real-world examples of names that circulate in social-media provider lists with no live product behind them — before trusting any provider from a viral list, check the domain resolves to the actual product (not a domain marketplace) and has a working API key flow.
 - **1M context claims:** before subscribing to something like Uncensored DeepSeek V4 Flash, confirm the provider's per-request context cap — marketing context ≠ usable context per tier.
 - **Freshness:** providers fold, rename, or re-gate constantly; this is a 2026-11 snapshot — always confirm model availability on the provider's own page.
 
