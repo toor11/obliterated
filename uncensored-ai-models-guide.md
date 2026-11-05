@@ -392,14 +392,14 @@ All hosted providers below speak the OpenAI chat-completions dialect — you plu
 | Infermatic | [infermatic.ai](https://infermatic.ai) | vLLM-backed cloud inference, no prompt logging, free plan | Qwen/Llama unaligned variants |
 | Mancer | [mancer.tech](https://mancer.tech) | Zero-refusal layers, no filtering, high context | Uncensored DeepSeek V4 Flash (284B, 1M context) |
 | Orca Router | [orcarouter.com](https://orcarouter.com) | Router with KYC for heavy obliterated weights; endpoint `api.orcarouter.ai/v1` | Large abliterated-class models; cyber-tier via business verification |
-| Obliteration.AI ⚠ | [obliteration.ai](https://obliteration.ai) | Deeply abliterated hosted models; typically KYC-gated | Obliterated Large Flash, DeepSeek Flash Uncensored |
 | Chat Data ⚠ | [chatdata.ai](https://chatdata.ai) | Hosted large-scale unaligned models via subscription | Uncensored DeepSeek V4 Flash tiers |
 | Shannon AI ⚠ | [shannon.ai](https://shannon.ai) | Frontier uncensored assistant with web search + memory, aimed at cyber/red-teaming | Shannon proprietary engines |
 
-**ⓘ Links status:** ✅-live as of 2026-11-06 for all rows without a ⚠. ⚠ rows could not be verified reachable at publish time (`obliteration.ai` parked/unreachable, `chatdata.ai` 404, `shannon.ai` unreachable) — these provider names circulate in the community; if the link is stale, search the exact name.
+**ⓘ Links status:** ✅-live as of 2026-11-06 for all rows without a ⚠. ⚠ rows could not be verified reachable at publish time (`chatdata.ai` 404, `shannon.ai` unreachable) — also, **"Obliteration.AI" was removed from this directory**: its listed domain (`obliteration.ai`) forwards to a *domain-for-sale listing*, i.e. no actual provider exists at that address; treat any future "Obliteration.AI" claims as unverified. If a ⚠ link is stale, search the exact provider name.
 
 **Choosing notes:**
-- **Identity vs. privacy:** KYC required at Orca Router / Obliteration.AI-class providers; Venice AI-class trades model breadth for anonymity.
+- **Identity vs. privacy:** KYC required at Orca Router-class providers; Venice AI-class trades model breadth for anonymity.
+- **Fake-provider check:** "Obliteration.AI" is a real-world example of a name that circulates in social-media provider lists with no live product behind it — before trusting any provider from a viral list, check the domain resolves to the actual product (not a domain marketplace) and has a working API key flow.
 - **1M context claims:** before subscribing to something like Uncensored DeepSeek V4 Flash, confirm the provider's per-request context cap — marketing context ≠ usable context per tier.
 - **Freshness:** providers fold, rename, or re-gate constantly; this is a 2026-11 snapshot — always confirm model availability on the provider's own page.
 
