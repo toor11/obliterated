@@ -1,6 +1,8 @@
 # TOP 20 UNCENSORED AI MODELS YOU SHOULD KNOW 😲 — Field Guide
 
 > **TL;DR:** This is a plain-English guide to a community top-20 list of "uncensored" open-weight models: what each one is, how to run them with `llama.cpp`, the settings that matter, which ones cost nothing to try, and which ones make the most sense for cybersecurity, coding, and agent work.
+>
+> **Series:** this guide is the *models* half. For the *hardware* half — running them always-on, self-hosted on [Proxmox 9 in LXCs](./ollama-openwebui-proxmox9-lxc.md) (Ollama → llama.cpp → vLLM) — start at the [series index](./README.md). Related: [how to obliterate your own model](./how-to-obliterate-models.md).
 
 ---
 
@@ -287,7 +289,7 @@ If V4.1 is the full-Expert MoE class, most people can't run it locally. Only qua
 
 | Access path | Cost | What you get | How |
 |---|---|---|---|
-| **Own hardware (best)** | $*/h it burns | Full GGUF / FP8, no logging, full speed | Download GGUF from Hugging Face, run `llama-server` (section 3) |
+| **Own hardware (best)** | $*/h it burns | Full GGUF / FP8, no logging, full speed | Download GGUF from Hugging Face, run `llama-server` (section 3) — or keep it always-on on a homelab box: [Proxmox 9 LXC series](./README.md) |
 | **OpenRouter** | several have `:free` slugs | Uncensored fine-tunes behind rotating IDs | `site:openrouter.ai/models` → add `:free` variant → standard OpenAI client with `OUT` headers. Free has ~20 RPM/day caps — fine for testing
 | **Venice AI ("experiential")** | free tier | Curated uncensored/pro-choice models, prompt-anonymized | GUI at venice.ai; API at docs.venice.ai with a ~$0 OPENAI-style key; free tier gives daily tokens |
 | **OpenCode / Cline / Zed / Cursor / Hermes** | free when pointed locally | Whatever you ran in llama.cpp | Set `base_url=http://127.0.0.1:8080/v1`, model = your `--alias` |
@@ -376,6 +378,8 @@ Run them **locally** for full privacy, or use a hosted provider. Both paths are 
 ### Local (the privacy end-game)
 
 Download GGUF from Hugging Face (§2.1) and run in llama.cpp — see [§3](#3-the-llamacpp-tutorial-estimate-free-copy-paste-friendly) and [§8](#8-quick-start-for-the-impatient): all GPUs, even CPU. FP8 weights are the alternative for vLLM/ExLlama on modern GPUs. Combine a local `llama-server` with coding agents (OpenCode, Cline, Zed, Cursor, Hermes all accept `base_url=http://127.0.0.1:8080/v1`) and nothing is ever logged anywhere.
+
+**Turn the laptop into a server:** for an always-on, snapshot-able, multi-GPU deployment of exactly these models, follow the Proxmox 9 LXC series — [Step 1: Ollama + Open WebUI](./ollama-openwebui-proxmox9-lxc.md) → [Step 2: llama.cpp](./llamacpp-proxmox9-lxc.md) (the natural home for the GGUFs in §2.1) → [Step 3: vLLM](./vllm-proxmox9-lxc.md) (for safetensors releases that fit in VRAM, e.g. the HauhauCS builds). The [series index](./README.md) has a "which runtime for which model" table.
 
 Useful companion resources:
 - **[abliteratedmodels.org](https://www.abliteratedmodels.org)** — index of 956 abliterated open-weight models on Hugging Face: what each was built from, size, hardware needs, license

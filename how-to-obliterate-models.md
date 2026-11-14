@@ -2,7 +2,7 @@
 
 > **OBLITERATE THE CHAINS THAT BIND YOU.** 
 
-> A complete, copy-paste walkthrough of [OBLITERATUS](https://github.com/elder-plinius/OBLITERATUS) — the free, open-source, AGPL-3.0 toolkit that surgically removes refusal behavior from an open-weight LLM without retraining. Pairs perfectly with our `uncensored-ai-models-guide.md`: that guide teaches you where to *get* obliterated models — this one teaches you how to *make* your own.
+> A complete, copy-paste walkthrough of [OBLITERATUS](https://github.com/elder-plinius/OBLITERATUS) — the free, open-source, AGPL-3.0 toolkit that surgically removes refusal behavior from an open-weight LLM without retraining. Pairs perfectly with our `uncensored-ai-models-guide.md`: that guide teaches you where to *get* obliterated models — this one teaches you how to *make* your own. Once you have one, the [Proxmox 9 LXC series](./README.md) shows you how to keep it running 24/7 on real GPUs (start with [Step 2: llama.cpp](./llamacpp-proxmox9-lxc.md) for GGUF, or [Step 3: vLLM](./vllm-proxmox9-lxc.md) for safetensors).
 
 ---
 
