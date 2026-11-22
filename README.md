@@ -44,6 +44,49 @@ where you're starting:
 driver install, GPU passthrough and backup workflow made there are reused by
 every later guide.
 
+## Bulk downloader: `download_archive.sh`
+
+The guides fetch one model at a time. `download_archive.sh` pulls the whole set
+in one resumable run: it queries the real repo sizes on Hugging Face before
+starting, shows progress, verifies MD5 + SHA-256 after every repo, and can
+re-check everything weekly from cron.
+
+```bash
+chmod +x download_archive.sh
+
+./download_archive.sh                # interactive: pick models, then source
+./download_archive.sh --hf           # force Hugging Face (no source prompt)
+./download_archive.sh --pirateface   # force Pirate Face; offers to install it if missing
+./download_archive.sh --update -y    # weekly update, non-interactive (cron)
+```
+
+**Requirements:** `bash`, `curl`, `jq`, `md5sum` (or `md5`), and the Hugging
+Face CLI — `pip install -U 'huggingface_hub[hf_transfer]'`. `whiptail` or
+`dialog` gives a checkbox picker; without either you type model numbers.
+`pirateface` is optional and only installed if you choose or force it — if it
+cannot be installed, the script falls back to Hugging Face.
+
+**What it does**
+
+- The model list lives in `MODEL_REPOS` in the script: original weights, GGUF
+  quantizations, and abliterated/uncensored variants per family.
+- Each repo lands in `./model-archive/<model>/<variant>/` (override the root
+  with `ARCHIVE_ROOT=/path`).
+- State stays in `./model-archive/`: `.archive_state` (completed repos),
+  `.model_versions` (last seen HF commit), `.hashes/` (per-repo MD5 + SHA-256).
+- Safe to Ctrl+C: partial files resume, completed repos are skipped.
+- `--update` checks only repos this script downloaded, compares the Hugging
+  Face commit SHA, and re-downloads just the files that changed.
+
+**Weekly cron** (Mondays 03:00, logging into the archive):
+
+```cron
+0 3 * * 1 cd /path/to/obliterated && ./download_archive.sh --update -y >> model-archive/update.log 2>&1
+```
+
+Set `HF_TOKEN` for gated repos and `MAX_WORKERS` (default `24`) to tune
+parallelism.
+
 ## The end-to-end path (models → Proxmox → chat)
 
 1. **Choose a model** from the [top-20 table](./uncensored-ai-models-guide.md#5-comparison-stats--one-table-all-20)
@@ -51,7 +94,8 @@ every later guide.
    Abliterated** (Q4_K_M ≈ 16 GB); small pick: **#16 HauhauCS Gemma 4 12B QAT
    Balanced** (6.9 GB, only Q4_K_M exists); big pick: **#3/#19 Qwen3.6-35B-A3B MoE**.
 2. **Download the GGUF** on the LXC — `llama-server -hf <repo>:<quant>` (Step 2,
-   §4) or the `huggingface_hub` script (Step 2, §5) for split files.
+   §4) or the `huggingface_hub` script (Step 2, §5) for split files. To grab the
+   whole set at once, use [`download_archive.sh`](#bulk-downloader-download_archivesh).
 3. **Serve it** — llama.cpp (Step 2) with the per-family sampling settings from
    the [model guide §3.5](./uncensored-ai-models-guide.md#35-the-best-settings-per-family-turn-these-into-your-defaults).
    Rule of thumb: GGUF / CPU+GPU offload → llama.cpp; fits in VRAM + concurrency → vLLM (Step 3).
