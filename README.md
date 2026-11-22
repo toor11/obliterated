@@ -57,6 +57,7 @@ chmod +x download_archive.sh
 ./download_archive.sh                # interactive: pick models, then source
 ./download_archive.sh --hf           # force Hugging Face (no source prompt)
 ./download_archive.sh --pirateface   # force Pirate Face; offers to install it if missing
+./download_archive.sh --verify       # re-check stored MD5/SHA-256, re-fetch bad files
 ./download_archive.sh --update -y    # weekly update, non-interactive (cron)
 ```
 
@@ -75,6 +76,8 @@ cannot be installed, the script falls back to Hugging Face.
 - State stays in `./model-archive/`: `.archive_state` (completed repos),
   `.model_versions` (last seen HF commit), `.hashes/` (per-repo MD5 + SHA-256).
 - Safe to Ctrl+C: partial files resume, completed repos are skipped.
+- `--verify` re-hashes completed repos against `.hashes/` and re-downloads only
+  the files that are missing or corrupted.
 - `--update` checks only repos this script downloaded, compares the Hugging
   Face commit SHA, and re-downloads just the files that changed.
 

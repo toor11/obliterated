@@ -21,6 +21,7 @@
 #   ./download_archive.sh --update -y      Non-interactive update (cron)
 #   ./download_archive.sh --pirateface     Force Pirate Face source
 #   ./download_archive.sh --hf             Force Hugging Face source
+#   ./download_archive.sh --verify         Re-check stored MD5/SHA-256 hashes
 #
 # ============================================================
 
@@ -36,6 +37,7 @@ UPDATE_MODE=false
 YES_MODE=false
 DOWNLOAD_SOURCE="hf"          # hf | pirateface
 SOURCE_EXPLICIT=false         # true when --hf / --pirateface was given
+VERIFY_MODE=false             # true when --verify was given
 
 # ---------- Parse arguments ----------
 for arg in "$@"; do
@@ -44,14 +46,16 @@ for arg in "$@"; do
         -y|--yes)              YES_MODE=true ;;
         --hf)                  DOWNLOAD_SOURCE="hf"; SOURCE_EXPLICIT=true ;;
         --pirateface|--pf)     DOWNLOAD_SOURCE="pirateface"; SOURCE_EXPLICIT=true ;;
+        --verify)              VERIFY_MODE=true ;;
         -h|--help)
-            echo "Usage: $0 [--update] [-y] [--hf|--pirateface]"
+            echo "Usage: $0 [--update] [-y] [--hf|--pirateface] [--verify]"
             echo
             echo "  (no flags)     Interactive download with model checkboxes"
             echo "  --update       Check for and download model updates"
             echo "  -y             Non-interactive (answer yes to prompts)"
             echo "  --hf           Force Hugging Face as download source"
             echo "  --pirateface   Force Pirate Face swarm as download source"
+            echo "  --verify       Re-check MD5/SHA-256 of completed repos and repair"
             exit 0
             ;;
     esac
@@ -314,7 +318,7 @@ MODELS=(
 # ============================================================
 load_completed() {
     declare -gA COMPLETED=()
-    [[ -f "$ARCHIVE_ROOT/$STATE_FILE" ]] || return
+    [[ -f "$ARCHIVE_ROOT/$STATE_FILE" ]] || return 0
     while IFS= read -r line; do
         [[ -n "$line" ]] && COMPLETED["$line"]=1
     done < "$ARCHIVE_ROOT/$STATE_FILE"
@@ -331,6 +335,10 @@ is_completed() {
     [[ -n "${COMPLETED[$1]:-}" ]]
 }
 
+hash_file_for() {
+    echo "$ARCHIVE_ROOT/$HASHES_DIR/$(echo "$1" | tr '/|' '__').hashes"
+}
+
 get_remote_commit() {
     local repo_id="$1"
     local headers=()
@@ -341,7 +349,7 @@ get_remote_commit() {
 
 load_versions() {
     declare -gA LOCAL_VERSIONS=()
-    [[ -f "$ARCHIVE_ROOT/$VERSIONS_FILE" ]] || return
+    [[ -f "$ARCHIVE_ROOT/$VERSIONS_FILE" ]] || return 0
     while IFS='=' read -r repo hash; do
         [[ -n "$repo" && -n "$hash" ]] && LOCAL_VERSIONS["$repo"]="$hash"
     done < "$ARCHIVE_ROOT/$VERSIONS_FILE"
@@ -366,7 +374,7 @@ get_repo_size() {
     [[ -n "$HF_TOKEN" ]] && headers+=(-H "Authorization: Bearer $HF_TOKEN")
 
     local response
-    response=$(curl -s --max-time 25 "${headers[@]}" "https://huggingface.co/api/models/${repo_id}" 2>/dev/null) || { echo 0; return; }
+    response=$(curl -s --max-time 25 "${headers[@]}" "https://huggingface.co/api/models/${repo_id}?blobs=true" 2>/dev/null) || { echo 0; return; }
     echo "$response" | jq -e '.error' >/dev/null 2>&1 && { echo 0; return; }
 
     if [[ -n "$include_pattern" ]]; then
@@ -389,7 +397,7 @@ compute_hashes() {
 
     echo "  Computing integrity hashes (MD5 + SHA-256)..."
 
-    find "$target_dir" -type f ! -name "*.tmp" ! -name "*.lock" -print0 2>/dev/null | sort -z | while IFS= read -r -d '' f; do
+    find "$target_dir" -type f ! -name "*.tmp" ! -name "*.lock" ! -path "*/.cache/*" -print0 2>/dev/null | sort -z | while IFS= read -r -d '' f; do
         local rel="${f#$target_dir/}"
         local md5 sha
 
@@ -417,6 +425,7 @@ compute_hashes() {
 verify_hashes() {
     local target_dir="$1"
     local hash_file="$2"
+    local manifest="${3:-}"
     [[ -f "$hash_file" ]] || return 1
 
     echo "  Verifying existing hashes..."
@@ -425,7 +434,12 @@ verify_hashes() {
     while read -r type expected path; do
         [[ -z "$type" ]] && continue
         local full="$target_dir/$path"
-        [[ -f "$full" ]] || { echo "  ✗ Missing: $path"; failed=1; continue; }
+        if [[ ! -f "$full" ]]; then
+            echo "  ✗ Missing: $path"
+            if [[ -n "$manifest" ]]; then echo "$path" >> "$manifest"; fi
+            failed=1
+            continue
+        fi
 
         local actual
         if [[ "$type" == "MD5" ]]; then
@@ -444,6 +458,7 @@ verify_hashes() {
 
         if [[ "$actual" != "$expected" ]]; then
             echo "  ✗ $type mismatch: $path"
+            if [[ -n "$manifest" ]]; then echo "$path" >> "$manifest"; fi
             failed=1
         fi
     done < <(awk 'NF>=3 {print $1, $2, substr($0, index($0,$3))}' "$hash_file")
@@ -490,7 +505,8 @@ download_repo() {
     echo "────────────────────────────────────────────────────────────"
 
     mkdir -p "$target_dir"
-    local hash_file="$ARCHIVE_ROOT/$HASHES_DIR/$(echo "$key" | tr '/|' '__').hashes"
+    local hash_file
+    hash_file=$(hash_file_for "$key")
 
     # If already completed and hashes exist, optionally verify. In update mode
     # (force=true) a completed repo still has to be re-fetched: hf download
@@ -703,6 +719,45 @@ echo "  QUERYING REAL SIZES FROM HUGGING FACE..."
 echo "============================================================"
 echo
 
+declare -A REPAIR_KEYS=()
+declare -A REPAIR_MANIFESTS=()
+
+if $VERIFY_MODE; then
+    echo "============================================================"
+    echo "  VERIFYING COMPLETED REPOS (MD5 + SHA-256)"
+    echo "============================================================"
+    echo
+
+    for entry in "${REPOS[@]}"; do
+        IFS='|' read -r repo_id local_path include_pattern <<< "$entry"
+        key="$repo_id|$include_pattern|$local_path"
+        is_completed "$key" || continue
+
+        hash_file=$(hash_file_for "$key")
+        if [[ ! -f "$hash_file" ]]; then
+            echo "  ? $repo_id → $local_path (no stored hashes – skipped)"
+            continue
+        fi
+
+        echo "→ $repo_id → $local_path"
+        manifest=$(mktemp)
+        if verify_hashes "$ARCHIVE_ROOT/$local_path" "$hash_file" "$manifest"; then
+            rm -f "$manifest"
+        else
+            REPAIR_KEYS["$key"]=1
+            REPAIR_MANIFESTS["$key"]="$manifest"
+        fi
+    done
+
+    echo
+    if [[ ${#REPAIR_KEYS[@]} -gt 0 ]]; then
+        echo "⚠ ${#REPAIR_KEYS[@]} repo(s) failed verification – bad files will be re-downloaded."
+    else
+        echo "✓ All completed repos verified clean."
+    fi
+    echo
+fi
+
 TOTAL_BYTES=0
 declare -A REPO_SIZES
 declare -a PENDING_REPOS=()
@@ -717,7 +772,13 @@ for entry in "${REPOS[@]}"; do
     REPO_SIZES["$key"]=$size_bytes
 
     if is_completed "$key"; then
-        status="DONE"
+        if [[ -n "${REPAIR_KEYS[$key]:-}" ]]; then
+            status="REPAIR"
+            PENDING_REPOS+=("$entry")
+            TOTAL_BYTES=$((TOTAL_BYTES + size_bytes))
+        else
+            status="DONE"
+        fi
     else
         status="PENDING"
         PENDING_REPOS+=("$entry")
@@ -774,8 +835,22 @@ for entry in "${PENDING_REPOS[@]}"; do
     IFS='|' read -r repo_id local_path include_pattern <<< "$entry"
     key="$repo_id|$include_pattern|$local_path"
     size=${REPO_SIZES[$key]:-0}
+    force=false
 
-    if ! download_repo "$repo_id" "$local_path" "$include_pattern" "$size" "$key"; then
+    if [[ -n "${REPAIR_KEYS[$key]:-}" ]]; then
+        force=true
+        manifest="${REPAIR_MANIFESTS[$key]:-}"
+        echo
+        echo "Removing files that failed verification in $local_path ..."
+        if [[ -n "$manifest" && -f "$manifest" ]]; then
+            sort -u "$manifest" | while IFS= read -r rel; do
+                [[ -n "$rel" ]] && rm -f "$ARCHIVE_ROOT/$local_path/$rel"
+            done
+            rm -f "$manifest"
+        fi
+    fi
+
+    if ! download_repo "$repo_id" "$local_path" "$include_pattern" "$size" "$key" "$force"; then
         echo
         echo "Download interrupted or failed."
         echo "Just run the script again to resume from this point."
