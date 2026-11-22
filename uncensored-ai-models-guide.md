@@ -1,6 +1,6 @@
-# TOP 20 UNCENSORED AI MODELS YOU SHOULD KNOW 😲 — Field Guide
+# TOP 21 UNCENSORED AI MODELS YOU SHOULD KNOW 😲 — Field Guide
 
-> **TL;DR:** This is a plain-English guide to a community top-20 list of "uncensored" open-weight models: what each one is, how to run them with `llama.cpp`, the settings that matter, which ones cost nothing to try, and which ones make the most sense for cybersecurity, coding, and agent work.
+> **TL;DR:** This is a plain-English guide to a community list of 21 "uncensored" open-weight models — the original top-20 plus Inkling 2 Mini: what each one is, how to run them with `llama.cpp`, the settings that matter, which ones cost nothing to try, and which ones make the most sense for cybersecurity, coding, and agent work.
 >
 > **Series:** this guide is the *models* half. For the *hardware* half — running them always-on, self-hosted on [Proxmox 9 in LXCs](./ollama-openwebui-proxmox9-lxc.md) (Ollama → llama.cpp → vLLM) — start at the [series index](./README.md). Related: [how to obliterate your own model](./how-to-obliterate-models.md).
 
@@ -34,13 +34,13 @@
 
 ---
 
-## 2. The 20 models explained
+## 2. The 21 models explained
 
 > Sizes/type noted from the published name; confirm the exact weight, quants, and license in the repository. 🔗 **[Jump to real download links](#21-the-actual-hugging-face-links)**.
 
 ### 2.1 The actual Hugging Face links
 
-Straight from @alizeh_ai's post (link #20 was truncated in the source):
+Straight from @alizeh_ai's post (link #20 was truncated in the source), plus #21 (Inkling 2 Mini, released 2026-11-20):
 
 1. https://huggingface.co/SC117/Qwen3.8-Flash-Next-GSQ-RCO-abliterated-GGUF
 2. https://huggingface.co/huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF
@@ -62,6 +62,7 @@ Straight from @alizeh_ai's post (link #20 was truncated in the source):
 18. https://huggingface.co/HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive
 19. https://huggingface.co/Bahushruth/Qwen3.6-35B-A3B-abliterated-v4 *(GGUF quants: `Bahushruth/Qwen3.6-35B-A3B-abliterated-v4-GGUF`)*
 20. https://huggingface.co/Abiray/DeepSeek-V4.1-Flash-1017-Uncensored-GSQ-RCO-Coder-GGUF *(197B — a low-bit IQ2_XXS variant also exists at [`DeepSeek-V4.1-Flash-1017-Uncensored-GSQ-RCO-IQ2_XXS-GGUF`](https://huggingface.co/Abiray/DeepSeek-V4.1-Flash-1017-Uncensored-GSQ-RCO-IQ2_XXS-GGUF))*
+21. https://huggingface.co/thinkingmachines/Inkling-2-Mini *(base is aligned, not uncensored. Uncensored: [`AtomicChat/Inkling-2-Mini-Uncensored-GGUF`](https://huggingface.co/AtomicChat/Inkling-2-Mini-Uncensored-GGUF) for llama.cpp, or [`IndrasMirror/Inkling-2-Mini-XQ-Uncensored`](https://huggingface.co/IndrasMirror/Inkling-2-Mini-XQ-Uncensored) for the Xolotl engine)*
 
 | # | Model | Family / Base | Size & Type | Uncensoring method | Works best as |
 |---|---|---|---|---|---|
@@ -85,6 +86,7 @@ Straight from @alizeh_ai's post (link #20 was truncated in the source):
 | 18 | **HauhauCS Qwen3.5-9B Uncensored Aggressive** | Qwen3.5 9B | 9B dense | Fine-tune, aggressive | Zero-refusal small model on modest VRAM |
 | 19 | **Bahushruth Qwen3.6-35B-A3B Abliterated v4** ⭐ [verified](https://huggingface.co/Bahushruth/Qwen3.6-35B-A3B-abliterated-v4) | Qwen3.6-35B-**A3B** (MoE hybrid, 256 experts 8+1) | 35B total / ~3B active, ~40 layers | Abliterated **v4** — norm-preserving orthogonalization, enriched 7.4K-prompt dataset; author reports **0% refusals, capabilities intact** | Big MoE work in ~24 GB (use the `-v4-GGUF` quants); smartest small-active MoE alongside #3 |
 | 20 | **DeepSeek V4.1 Flash 1017 Uncensored** ⭐ [repo](https://huggingface.co/Abiray/DeepSeek-V4.1-Flash-1017-Uncensored-GSQ-RCO-Coder-GGUF) | DeepSeek-V4.1-Flash (1017 checkpoint) | **197 B MoE, GSQ-RCO quant** (Ultra-low-bit coder build; IQ2_XXS variant also published) | Uncensored + GSQ-RCO low-bit quant | Hard coding + long-context reasoning; GSQ-RCO low-bit makes a 197B plausible on serious single-box setups |
+| 21 | **Inkling 2 Mini** ⭐ [base](https://huggingface.co/thinkingmachines/Inkling-2-Mini) · [uncensored GGUF](https://huggingface.co/AtomicChat/Inkling-2-Mini-Uncensored-GGUF) | Inkling 2 Mini (Thinking Machines Lab, released 2026-11-20; Apache-2.0) | **26.4 B total / 3.4 B active** (~5.4 B effective: 24 physical layers, middle 12 run 3× = 48 applications), 128 experts top-8, **vision** (0.64 GB mmproj), **1 M context**; official checkpoint ~20 GB in NVFP4 + MXFP8, 32 GB+ VRAM/RAM | Base ships aligned — uncensoring is a community edit: AtomicChat rank-1 LoRA on the 49 residual writers (0/81 EN + 0/100 RU harmful refusals, 0/250 XSTest; MMLU 79.15% vs 80.65%), or IndrasMirror's XQ build (13.93 GB, Xolotl engine) | Agentic coding, tool use and screenshot/OCR at 3B-active speed: 16.5 GB Q4_K / 13.3 GB IQ3_S / 8.7 GB IQ2_M, ~89 tok/s decode (official NVFP4 on Xolotl, 4090), 113 tok/s (XQ); llama.cpp **b12600+**, vLLM, SGLang or Ollama |
 
 ### Reality-check notes
 
@@ -92,7 +94,8 @@ Straight from @alizeh_ai's post (link #20 was truncated in the source):
 - **#5, #9, #14, #16, #18** are the HauhauCS release family. The name pattern is `[family] [behavior]`. Aggressive = most compliant; Balanced = the author's own recommendation (99%+ of users won't need Aggressive).
 - **#15** is an image generator. You will not load it in `llama-server` and get English back — GGUF DiT weights go into ComfyUI / sd.cpp-style pipelines.
 - **#19 vs #3**: both are the same base (Qwen3.6-35B-A3B MoE). #3 (huihui) ships GGUF with an MTP drafter; #19 (Bahushruth v4) is the highest-quality ablation of that family (norm-preserving, 0% refusals, capabilities intact) — grab its `-v4-GGUF` repo for llama.cpp.
-- **The specs below are verified from the repos for #1, #3, #16, #19 and #20** (flagged ⭐/✅). The rest remain name-based estimates. All of them have much better hardware-efficiency stories than the raw names suggest.
+- **#21 Inkling 2 Mini notes** — Apache-2.0, released 2026-11-20: 26.4B/3.4B-active looped MoE (24 layers, the middle 12 run three times, hence ~5.4B effective per token), 128 experts, vision, 1M-token window. The base checkpoint is **aligned**, so "uncensored" means the AtomicChat LoRA (0/81 EN + 0/100 RU harmful refusals, 0/250 XSTest; MMLU 79.15% vs 80.65%, i.e. −1.5 pt) or IndrasMirror's XQ edit. Architecture is brand new: the GGUFs need **llama.cpp b12600+** (merged PR #32694), and the old PR #32695 layout is not interchangeable. IndrasMirror's 13.93 GB XQ build targets the Xolotl engine, not `llama-server`.
+- **The specs below are verified from the repos for #1, #3, #16, #19, #20 and #21** (flagged ⭐/✅). The rest remain name-based estimates. All of them have much better hardware-efficiency stories than the raw names suggest.
 
 ---
 
@@ -302,7 +305,7 @@ If V4.1 is the full-Expert MoE class, most people can't run it locally. Only qua
 
 ---
 
-## 5. Comparison stats — one table, all 20
+## 5. Comparison stats — one table, all 21
 
 > 📊 **Key:** Type = `dense` / `MoE` / `image` / `VL`. VRAM = rough Q4_K_M full GPU-offload estimate. Speed = rough tok/s on RTX 4090-class hardware at 32K prompt-full — treat anything as ballpark, not gospel. ⚔ = independently benchmarked in the wild, ✗ = repo card only / community vibe (verify).
 
@@ -328,12 +331,14 @@ If V4.1 is the full-Expert MoE class, most people can't run it locally. Only qua
 | 18 | HauhauCS Qwen3.5-9B Aggressive | 9 B | dense ✗ | 5–6 GB | 8 GB | 256K ✗ | Zero-refusal small ✗ |
 | 19 | Bahushruth Qwen3.6-35B-A3B Abliterated v4 ✅ | 35B/3A | **MoE** ✅ (safetensors + `-v4-GGUF` quants) | ~13–25 GB @ Q2–Q5 (MoE GGUF, estim.) | 16–24 GB | 128 K | Cleanest ablation of the 35B-A3B family: 0% refusals, capabilities intact ✅ |
 | 20 | DeepSeek V4.1 Flash 1017 Uncensored ✅ | **197 B** GSQ-RCO MoE | MoE + Coder ✅ | low-bit GSQ tiers (check the repo's Files tab — no Q4/Q8 exists for 197B) | multi-GPU / Strata-class | check repo | Hard coding + long-context reasoning, GSQ-quantized ✅ |
+| 21 | Inkling 2 Mini (uncensored via AtomicChat LoRA) ✅ | **26.4 B / 3.4 B active** (~5.4 B effective) | **MoE + vision + loop** ✅ | **16.5 GB @ AD-Q4_K · 13.3 GB @ IQ3_S · 8.7 GB @ IQ2_M** (+0.64 GB mmproj); official NVFP4/MXFP8 ~20 GB | 16 GB (IQ3_S) / 24 GB (Q4_K) / 32 GB+ unified for the official checkpoint | **1 M** ✅ | Agentic coding + tool use + screenshot/OCR ✅ — SWE-bench Verified 79.2%, Terminal Bench v2.1 71.6%, MMMU Pro 74.9%; ~89 tok/s decode (official NVFP4 on Xolotl, 4090), 113 tok/s (XQ); llama.cpp b12600+ |
 
 **Named hard hitters for "capability":"**
 - 🥇 Top reasoning / hardest coding: **#1** (177B MoE hybrid) and **#20** (197B GSQ-RCO Coder — now locally runnable via Strata-class hardware) if you own the VRAM, or **#19 / #3** (35B-A3B MoE) for reachable local rigs
 - 🥈 Best speed-per-smart local: **#3 and #9** (35B-A3B MoE — the 3B-active speed-priceless option for agents); **#16** with MTP for smaller cards
 - 🥉 Best everyday 27B: **#2 Huihui** (best "I'm still smart, just not refusing" balance)
 - 🏅 Most "will answer anything" per GB: **#12 Cyber-Ornith / #10 double-pass 27B**
+- 🏅 Best multimodal/agent on 24 GB: **#21 Inkling 2 Mini** (1M ctx, vision, SWE-bench Verified 79.2%; Q4_K 16.5 GB — llama.cpp b12600+)
 - 🏅 Tiny rigs: **#16 Gemma 4 12B QAT** (6.9 GB char-perfect daily driver, verify) or **#14 Gemma E4B** for even less
 
 ---
@@ -366,6 +371,7 @@ If V4.1 is the full-Expert MoE class, most people can't run it locally. Only qua
 2. **#1 / #11 Flash-Next** — when the agent loop needs 100+ steps and you don't want to watch it do slow 27B
 3. **#16 HauhauCS Gemma 4 12B Balanced** — the tiny agent-friendly assistant for a laptop
 4. **#17 Qwen3-VL-8B Abliterated** — screenshot agents that read UIs and refuse nothing
+5. **#21 Inkling 2 Mini** — 1M context, vision and tool calls at 3B-active speed (Q4_K 16.5 GB); needs a llama.cpp **b12600+** build
 
 - **Agent settings:** `--temp 0.2 --top-p 0.85 --repeat-penalty 1.0 --ctx-size 131072` (kill that odd Qwen sampling drift on very long contexts with `--no-reasoning`), and always cap `max_tokens` per step (512–1024) so a runaway tool call can't torrefy context.
 
@@ -451,4 +457,4 @@ llama-server -m ~/models/qwen/*Q4_K_M*.gguf -ngl 999 \
 
 ---
 
-*File last assembled: 2026-11-06 — ⭐ flags mark entries whose specs and load commands were verified directly against their Hugging Face model cards (currently #1, #3, #16, #19). Community fine-tunes rename weekly — the model card on Hugging Face is the source of truth, not social media lists.* 🫡
+*File last assembled: 2026-11-22 — ⭐ flags mark entries whose specs and load commands were verified directly against their Hugging Face model cards (currently #1, #3, #16, #19, #20, #21). Community fine-tunes rename weekly — the model card on Hugging Face is the source of truth, not social media lists.* 🫡

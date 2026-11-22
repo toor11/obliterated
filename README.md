@@ -10,7 +10,7 @@ where you're starting:
                      ┌──────────────────────────────┐
                      │  1. GET MODELS               │
                      │  uncensored-ai-models-guide  │◄──────┐
-                     │  (top-20 field guide)        │       │ pick models
+                     │  (top-21 field guide)        │       │ pick models
                      └──────────────┬───────────────┘       │ to serve
                                     │ optional: make        │
                                     ▼ your own              │
@@ -34,7 +34,7 @@ where you're starting:
 
 | # | Guide | What it teaches | Read it when... |
 |---|---|---|---|
-| 0 | [**uncensored-ai-models-guide.md**](./uncensored-ai-models-guide.md) | The top-20 uncensored/abliterated models: what each is, exact HF links, per-family llama.cpp settings, free-access paths, hosted providers | You want to know *which* model to run |
+| 0 | [**uncensored-ai-models-guide.md**](./uncensored-ai-models-guide.md) | The top-21 uncensored/abliterated models: what each is, exact HF links, per-family llama.cpp settings, free-access paths, hosted providers | You want to know *which* model to run |
 | ⚒️ | [**how-to-obliterate-models.md**](./how-to-obliterate-models.md) | Make your **own** abliterated model with [OBLITERATUS](https://github.com/elder-plinius/OBLITERATUS): methods, verification, GGUF conversion | The model you want doesn't exist yet, or you want to ablate a specific base |
 | 1 | [**ollama-openwebui-proxmox9-lxc.md**](./ollama-openwebui-proxmox9-lxc.md) | **Foundation.** Proxmox 9 install, NVIDIA driver, GPU passthrough to LXC, Open WebUI + Ollama, backups | You're building the server from bare metal |
 | 2 | [**llamacpp-proxmox9-lxc.md**](./llamacpp-proxmox9-lxc.md) | CUDA toolkit in host + LXC, build llama.cpp, download & serve GGUFs (incl. split files), connect Open WebUI | You want the best runtime for **GGUF** quants and big RAM+VRAM offload |
@@ -92,10 +92,12 @@ parallelism.
 
 ## The end-to-end path (models → Proxmox → chat)
 
-1. **Choose a model** from the [top-20 table](./uncensored-ai-models-guide.md#5-comparison-stats--one-table-all-20)
+1. **Choose a model** from the [comparison table](./uncensored-ai-models-guide.md#5-comparison-stats--one-table-all-21)
    — match its VRAM column to your GPUs. Everyday pick: **#2 Huihui Qwen3.8-27B
    Abliterated** (Q4_K_M ≈ 16 GB); small pick: **#16 HauhauCS Gemma 4 12B QAT
    Balanced** (6.9 GB, only Q4_K_M exists); big pick: **#3/#19 Qwen3.6-35B-A3B MoE**.
+   Multimodal/agent pick: **#21 Inkling 2 Mini** (26.4B/3.4B active, 1M ctx, Q4_K
+   16.5 GB — needs llama.cpp b12600+).
 2. **Download the GGUF** on the LXC — `llama-server -hf <repo>:<quant>` (Step 2,
    §4) or the `huggingface_hub` script (Step 2, §5) for split files. To grab the
    whole set at once, use [`download_archive.sh`](#bulk-downloader-download_archivesh).
@@ -111,8 +113,8 @@ parallelism.
 
 | You have... | Use | Guide |
 |---|---|---|
-| GGUF quants (the whole top-20 list), split multi-file models, CPU+GPU offload | **llama.cpp** | [Step 2](./llamacpp-proxmox9-lxc.md) |
-| Model fits entirely in VRAM, need many concurrent users (agent loops, OpenCode) | **vLLM** (needs safetensors — e.g. #19 Bahushruth v4, HauhauCS #9/#14/#16; not the `*-GGUF` repos) | [Step 3](./vllm-proxmox9-lxc.md) |
+| GGUF quants (the whole list), split multi-file models, CPU+GPU offload | **llama.cpp** | [Step 2](./llamacpp-proxmox9-lxc.md) |
+| Model fits entirely in VRAM, need many concurrent users (agent loops, OpenCode) | **vLLM** (needs safetensors — e.g. #19 Bahushruth v4, HauhauCS #9/#14/#16, Inkling 2 Mini's official NVFP4/MXFP8 checkpoint; not the `*-GGUF` repos) | [Step 3](./vllm-proxmox9-lxc.md) |
 | Just want to chat in a browser ASAP | **Ollama + Open WebUI** | [Step 1](./ollama-openwebui-proxmox9-lxc.md) |
 | A model you ablated yourself | Convert to GGUF ([OBLITERATUS §7](./how-to-obliterate-models.md#7-save--push--convert-to-gguf-get-it-into-llamacpp)) then llama.cpp | [Step 2](./llamacpp-proxmox9-lxc.md) |
 
